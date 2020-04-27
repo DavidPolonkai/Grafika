@@ -9,10 +9,15 @@
 typedef struct Scene
 {
     Camera camera;
-    Model cube;
-    Model cube2;
-    Material material;
-    GLuint texture_id;
+    Model ball;
+    Model field;
+    Model tri;
+    Material material_ball;
+    Material material_field;
+    Material material_tri;
+    GLuint texture_ball;
+    GLuint texture_field;
+    GLuint texture_tri;
 } Scene;
 
 /**
