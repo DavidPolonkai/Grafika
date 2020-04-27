@@ -5,7 +5,7 @@
 #include <load.h>
 #include <draw.h>
 
-int num=0;
+float st=0,sr=0,dir=0;
 
 void init_scene(Scene* scene)
 {
@@ -17,25 +17,22 @@ void init_scene(Scene* scene)
 
 
 
-    //load_model(&(scene->tri), "Objects/tri.obj");
-    //scene->texture_tri = load_texture("textures/tri.png"); 
-    //glBindTexture(GL_TEXTURE_2D, scene->texture_tri);
-
+       
 
 
     scene->material_ball.ambient.red = 0.2;
     scene->material_ball.ambient.green = 0.2;
     scene->material_ball.ambient.blue = 0.2;
 
-    scene->material_ball.diffuse.red = 0.3;
-    scene->material_ball.diffuse.green = 0.3;
-    scene->material_ball.diffuse.blue = 0.3;
+    scene->material_ball.diffuse.red = 0.0;
+    scene->material_ball.diffuse.green = 0.0;
+    scene->material_ball.diffuse.blue = 0.0;
 
     scene->material_ball.specular.red = 1.0;
     scene->material_ball.specular.green = 1.0;
-    scene->material_ball.specular.blue = 0.2;
+    scene->material_ball.specular.blue = 1.0;
 
-    scene->material_ball.shininess = 0.1;
+    scene->material_ball.shininess = 1.0;
 
 
     load_model(&(scene->field), "Objects/field.obj");
@@ -55,7 +52,11 @@ void init_scene(Scene* scene)
     scene->material_field.specular.green = 1.0;
     scene->material_field.specular.blue = 1.0;
 
-    scene->material_field.shininess = 1.0;
+    scene->material_field.shininess = 0.1;
+
+    load_model(&(scene->tri), "Objects/tri.obj");
+    scene->texture_tri = load_texture("textures/tri.png"); 
+
 
 }
 
@@ -101,21 +102,25 @@ void set_material(const Material* material)
 
 void draw_scene(const Scene* scene)
 {
-    num++;
     set_material(&(scene->material_ball));
     set_lighting();
     //glTranslatef(num/1000.0,0.0,0.0);
     glScalef(1,1,1);
     draw_origin(); 
-    //glRotatef(num,0,1,0);
-    glTranslatef(num/1000.0,0.0,0.0);
-    glBindTexture(GL_TEXTURE_2D, scene->texture_ball);
-    draw_model(&(scene->ball));
-    //glTranslatef(0,0,0);
+
+    
+    
+
+    glTranslatef(0,0,0);
     glBindTexture(GL_TEXTURE_2D, scene->texture_field);
     set_material(&(scene->material_field));
     draw_model(&(scene->field));
-    //draw_model(&(scene->tri));
+    glBindTexture(GL_TEXTURE_2D, scene->texture_tri);
+    draw_model(&(scene->tri));
+    move_ball(1,0,&st,&sr,&dir);
+    glBindTexture(GL_TEXTURE_2D, scene->texture_ball);
+    draw_model(&(scene->ball));
+    printf("%f",&sr);
 }
 
 void draw_origin()
@@ -137,3 +142,15 @@ void draw_origin()
     glEnd();
 }
 
+void move_ball(int speed, int direction,float* st,float* sr,float* dir){
+   
+   *st+=0.01745329252 * speed;
+    if (direction==0) *dir=0;
+    else if (direction==1) *dir=0.7071067812;
+    else if (direction==-1) *dir=-0.7071067812;
+    glTranslatef(*st,0,1);
+    *sr+=speed;	
+    if (*sr>360) *sr-=360;
+    glRotatef(*sr,0,1,0);
+
+}
