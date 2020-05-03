@@ -9,10 +9,8 @@
 typedef struct Scene
 {
     Camera camera;
-    Model ball;
     Model field;
     Model tri;
-    Material material_ball;
     Material material_field;
     Material material_tri;
     GLuint texture_ball;
@@ -20,10 +18,22 @@ typedef struct Scene
     GLuint texture_tri;
 } Scene;
 
+typedef struct Ball
+{
+ Model model;
+ Material material;
+ GLuint texture;
+ vec3 position;
+ float rot_degree;
+ int direction;
+ int speed;
+ float r;
+} Ball;
+
 /**
  * Initialize the scene by loading models.
  */
-void init_scene(Scene* scene);
+void init_scene(Scene* scene,Ball* ball);
 
 /**
  * Set the lighting of the scene.
@@ -38,11 +48,17 @@ void set_material(const Material* material);
 /**
  * Draw the scene objects.
  */
-void draw_scene(const Scene* scene);
+void draw_scene(const Scene* scene,const Ball* ball);
 
 /**
  * Draw the origin of the world coordinate system.
  */
 void draw_origin();
 
+
+void set_direction(Ball* ball,int value);
+
+void set_ball_speed(Ball* ball, int value);
+
+void collusion(Ball* ball);
 #endif /* SCENE_H */

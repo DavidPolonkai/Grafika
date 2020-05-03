@@ -8,8 +8,6 @@ struct {
     int y;
 } mouse_position;
 
-double rotate;
-
 void display()
 {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -17,8 +15,9 @@ void display()
 
     glPushMatrix();
     set_view(&camera);
-    
-    draw_scene(&scene);
+
+    set_camera_pos(&camera,ball.position,10,45);
+    draw_scene(&scene,&ball);
     glPopMatrix();
 
     if (is_preview_visible) {
@@ -61,7 +60,7 @@ void mouse(int button, int state, int x, int y)
 
 void motion(int x, int y)
 {
-    rotate_camera(&camera, mouse_position.x - x, mouse_position.y - y);
+    //rotate_camera(&camera, mouse_position.x - x, mouse_position.y - y);
     mouse_position.x = x;
     mouse_position.y = y;
     glutPostRedisplay();
@@ -70,37 +69,34 @@ void motion(int x, int y)
 void keyboard(unsigned char key, int x, int y)
 {
     switch (key) {
-    case 'w':
-        set_camera_speed(&camera, 1);
-        break;
-    case 's':
-        set_camera_speed(&camera, -1);
-        break;
-    case 'a':
-        set_camera_side_speed(&camera, 1);
-        break;
-    case 'd':
-        set_camera_side_speed(&camera, -1);
+    case 'e':
+        set_camera_angle(&camera,-1);
         break;
     case 'q':
-        set_camera_vert_speed(&camera,-1);
+        set_camera_angle(&camera,1);
         break;
-    case 'e':
- 	set_camera_vert_speed(&camera ,1);
+    case 'a':
+        //set_camera_side_speed(&camera, 1);
+	set_direction(&ball,1);
         break;
-   /* case 'y':
-	rotate_obj(&obj,1);
+    case 'd':
+        //set_camera_side_speed(&camera, -1);
+	set_direction(&ball,-1);
+        break;
+    case '+':
+        set_camera_distance(&camera,1);
+        break;
+    case '-':
+ 	set_camera_distance(&camera ,-1);
+        break;
+    case 'w':
+	set_ball_speed(&ball,1);
+	break;
+    case 's':
+	set_ball_speed(&ball,-1);
 	break;
     case 'x':
-	rotate_obj(&obj,1);
-	break;*/
-    case 't':
-        if (is_preview_visible) {
-            is_preview_visible = FALSE;
-        }
-        else {
-            is_preview_visible = TRUE;
-        }
+        set_direction(&ball,0);
         break;
     }
 
@@ -116,13 +112,14 @@ void keyboard_up(unsigned char key, int x, int y)
         break;
     case 'a':
     case 'd':
-        set_camera_side_speed(&camera, 0.0);
+        //set_camera_side_speed(&camera, 0.0);
+	//wsset_direction(&ball,0);
         break;
     case 'q':
     case 'e':
         set_camera_vert_speed(&camera,0.0);
         break; 
-    /*case 'x':
+    /*case '':
     case 'y':
         rotate_obj(&obj,0.0);
 	break;*/
@@ -141,7 +138,7 @@ void idle()
     elapsed_time = (double)(current_time - last_frame_time) / 1000;
     last_frame_time = current_time;
 
-    update_camera(&camera, elapsed_time);
-
+    update_camera(&camera, elapsed_time,&ball.position);
+    
     glutPostRedisplay();
 }

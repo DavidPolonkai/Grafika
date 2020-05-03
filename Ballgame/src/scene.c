@@ -5,34 +5,33 @@
 #include <load.h>
 #include <draw.h>
 
-float st=0,sr=0,dir=0;
 
-void init_scene(Scene* scene)
+void init_scene(Scene* scene,Ball* ball)
 {
-    load_model(&(scene->ball), "Objects/ball.obj");
-    scene->texture_ball = load_texture("textures/balltexture.png"); 
 
+    load_model(&(ball->model), "Objects/ball.obj");
+    ball->texture = load_texture("textures/balltexture.png"); 
 
+    ball->direction=0;
+    ball->position.x=0;
+    ball->position.y=0;
+    ball->position.z=1;
+    ball->rot_degree=0;
+    ball->r=1;
 
+    ball->material.ambient.red = 0.2;
+    ball->material.ambient.green = 0.2;
+    ball->material.ambient.blue = 0.2;
 
+    ball->material.diffuse.red = 0.0;
+    ball->material.diffuse.green = 0.0;
+    ball->material.diffuse.blue = 0.0;
 
+    ball->material.specular.red = 1.0;
+    ball->material.specular.green = 1.0;
+    ball->material.specular.blue = 1.0;
 
-       
-
-
-    scene->material_ball.ambient.red = 0.2;
-    scene->material_ball.ambient.green = 0.2;
-    scene->material_ball.ambient.blue = 0.2;
-
-    scene->material_ball.diffuse.red = 0.0;
-    scene->material_ball.diffuse.green = 0.0;
-    scene->material_ball.diffuse.blue = 0.0;
-
-    scene->material_ball.specular.red = 1.0;
-    scene->material_ball.specular.green = 1.0;
-    scene->material_ball.specular.blue = 1.0;
-
-    scene->material_ball.shininess = 1.0;
+    ball->material.shininess = 1.0;
 
 
     load_model(&(scene->field), "Objects/field.obj");
@@ -53,8 +52,9 @@ void init_scene(Scene* scene)
     scene->material_field.specular.blue = 1.0;
 
     scene->material_field.shininess = 0.1;
-
+	
     load_model(&(scene->tri), "Objects/tri.obj");
+
     scene->texture_tri = load_texture("textures/tri.png"); 
 
 
@@ -100,9 +100,9 @@ void set_material(const Material* material)
     glMaterialfv(GL_FRONT_AND_BACK, GL_SHININESS, &(material->shininess));
 }
 
-void draw_scene(const Scene* scene)
+void draw_scene(const Scene* scene,const Ball* ball)
 {
-    set_material(&(scene->material_ball));
+    set_material(&(ball->material));
     set_lighting();
     //glTranslatef(num/1000.0,0.0,0.0);
     glScalef(1,1,1);
@@ -117,12 +117,10 @@ void draw_scene(const Scene* scene)
     draw_model(&(scene->field));
     glBindTexture(GL_TEXTURE_2D, scene->texture_tri);
     draw_model(&(scene->tri));
-    move_ball(1,0,&st,&sr,&dir);
-    glBindTexture(GL_TEXTURE_2D, scene->texture_ball);
-    draw_model(&(scene->ball));
-    printf("%f",&sr);
+    move_ball(ball);
+    glBindTexture(GL_TEXTURE_2D, ball->texture);
+    draw_model(&(ball->model));
 }
-
 void draw_origin()
 {
     glBegin(GL_LINES);
@@ -142,15 +140,73 @@ void draw_origin()
     glEnd();
 }
 
-void move_ball(int speed, int direction,float* st,float* sr,float* dir){
-   
-   *st+=0.01745329252 * speed;
-    if (direction==0) *dir=0;
-    else if (direction==1) *dir=0.7071067812;
-    else if (direction==-1) *dir=-0.7071067812;
-    glTranslatef(*st,0,1);
-    *sr+=speed;	
-    if (*sr>360) *sr-=360;
-    glRotatef(*sr,0,1,0);
+void move_ball(Ball* ball){
+   int isSide;
+   int rotY;
+   int rotX;
+   float dir; 
+   float actual_movement=0.01745329252 * ball->speed;   
+    if (ball->direction==0) {
+	dir=1;
+	isSide=0;
+        rotY=1;
+        rotX=0;
+    }	
+    else if (ball->direction==1){ //bal
+	dir=0.7071067812;
+	isSide=1;
+        rotY=-1;
+        rotX=1;
+	}	
+    else if (ball->direction==-1){ //jobb
+	dir=0.7071067812;
+  	isSide=-1;
+        rotY=1;
+        rotX=1;
+	}
+	printf("=%f=",ball->position.y);
+    ball->position.x+=actual_movement*dir;
+    ball->position.y+=dir*actual_movement*isSide;
+    ball->position.z+=0;
+    collusion(ball);
+    glTranslatef(ball->position.x,ball->position.y,ball->position.z);
+    ball->rot_degree+=ball->speed;	
+    if (ball->rot_degree>360) ball->rot_degree-=360;
+    glRotatef(ball->rot_degree*rotY,rotX,rotY,0);
+}
+
+
+void set_direction(Ball* ball,int value){
+	ball->direction=value;
+}
+
+void set_ball_speed(Ball* ball,int value){
+	ball->speed+=value;
+
+}
+
+void collusion(Ball* ball){
+ printf("III%fIII",ball->position.x);
+ if (ball->position.x>=100-ball->r){
+	ball->speed=-ball->speed*0.66666;
+	ball->position.x=99.9999-ball->r;
+}
+ else if (ball->position.x<=-100+ball->r){ 
+	ball->speed=-ball->speed*0.66666;
+	ball->position.x=-99.9999+ball->r;
+}
+
+ if (ball->position.y>=10-ball->r){
+	ball->speed*=0.66666;
+        ball->direction*=-1;
+	ball->position.y=9.9999-ball->r;
+}
+ else if (ball->position.y<=-10+ball->r){
+	ball->speed*=0.66666;
+        ball->direction*=-1;
+	ball->position.y=-9.9999+ball->r;
+
+
+}
 
 }

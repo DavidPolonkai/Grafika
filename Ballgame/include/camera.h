@@ -11,6 +11,8 @@ typedef struct Camera
     vec3 position;
     vec3 rotation;
     vec3 speed;
+    float angle;
+    float distance;
 } Camera;
 
 /**
@@ -26,7 +28,7 @@ void init_camera(Camera* camera);
 /**
  * Update the position of the camera.
  */
-void update_camera(Camera* camera, double time);
+void update_camera(Camera* camera, double time,vec3* vector);
 
 /**
  * Apply the camera settings to the view transformation.
@@ -50,4 +52,9 @@ void set_camera_side_speed(Camera* camera, double speed);
 
 void set_camera_vert_speed(Camera* camera, double speed);
 
+void set_camera_pos(Camera* camera,vec3 ballpos,float distance, float angle);
+
+void set_camera_angle(Camera* camera,int a);
+
+void set_camera_distance(Camera* camera, int a);
 #endif /* CAMERA_H */
