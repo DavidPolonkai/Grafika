@@ -28,7 +28,18 @@ typedef struct Ball
  int direction;
  int speed;
  float r;
+ int isAlive;
 } Ball;
+
+typedef struct Tri
+{
+ Model model;
+ Material material;
+ GLuint texture;
+ vec3 position[100];
+} Tri;
+
+Tri tri;
 
 /**
  * Initialize the scene by loading models.
@@ -61,4 +72,6 @@ void set_direction(Ball* ball,int value);
 void set_ball_speed(Ball* ball, int value);
 
 void collusion(Ball* ball);
+
+
 #endif /* SCENE_H */

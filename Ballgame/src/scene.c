@@ -5,7 +5,6 @@
 #include <load.h>
 #include <draw.h>
 
-
 void init_scene(Scene* scene,Ball* ball)
 {
 
@@ -13,11 +12,12 @@ void init_scene(Scene* scene,Ball* ball)
     ball->texture = load_texture("textures/balltexture.png"); 
 
     ball->direction=0;
-    ball->position.x=0;
+    ball->position.x=-95;
     ball->position.y=0;
     ball->position.z=1;
     ball->rot_degree=0;
     ball->r=1;
+    ball->isAlive=1;
 
     ball->material.ambient.red = 0.2;
     ball->material.ambient.green = 0.2;
@@ -39,6 +39,14 @@ void init_scene(Scene* scene,Ball* ball)
 
 
 
+
+
+    load_model(&(tri.model), "Objects/tri.obj");
+
+    tri.texture = load_texture("textures/tri.png"); 
+
+    fill_tris();
+
     scene->material_field.ambient.red = 0.2;
     scene->material_field.ambient.green = 0.2;
     scene->material_field.ambient.blue = 0.2;
@@ -53,9 +61,9 @@ void init_scene(Scene* scene,Ball* ball)
 
     scene->material_field.shininess = 0.1;
 	
-    load_model(&(scene->tri), "Objects/tri.obj");
+//    load_model(&(scene->tri), "Objects/tri.obj");
 
-    scene->texture_tri = load_texture("textures/tri.png"); 
+  //  scene->texture_tri = load_texture("textures/tri.png"); 
 
 
 }
@@ -109,17 +117,24 @@ void draw_scene(const Scene* scene,const Ball* ball)
     draw_origin(); 
 
     
-    
-
+    glPushMatrix();
     glTranslatef(0,0,0);
     glBindTexture(GL_TEXTURE_2D, scene->texture_field);
     set_material(&(scene->material_field));
     draw_model(&(scene->field));
-    glBindTexture(GL_TEXTURE_2D, scene->texture_tri);
-    draw_model(&(scene->tri));
+
+	
+    draw_triangular_pyramids();
+
+    glPopMatrix();
+
+
     move_ball(ball);
     glBindTexture(GL_TEXTURE_2D, ball->texture);
     draw_model(&(ball->model));
+
+
+
 }
 void draw_origin()
 {
@@ -141,6 +156,7 @@ void draw_origin()
 }
 
 void move_ball(Ball* ball){
+ if (ball->isAlive==1){
    int isSide;
    int rotY;
    int rotX;
@@ -164,15 +180,26 @@ void move_ball(Ball* ball){
         rotY=1;
         rotX=1;
 	}
-	printf("=%f=",ball->position.y);
     ball->position.x+=actual_movement*dir;
     ball->position.y+=dir*actual_movement*isSide;
     ball->position.z+=0;
-    collusion(ball);
+   
+	printf("x:%f",ball->position.x);
+	printf("y:%f",ball->position.y);
+	printf("z:%f\n",ball->position.z);
+
     glTranslatef(ball->position.x,ball->position.y,ball->position.z);
     ball->rot_degree+=ball->speed;	
     if (ball->rot_degree>360) ball->rot_degree-=360;
     glRotatef(ball->rot_degree*rotY,rotX,rotY,0);
+ 
+    collusion(ball);
+ }
+ else {
+	glTranslatef(ball->position.x,ball->position.y,ball->r);
+	if (ball->r>0.3)ball->r-=0.01;
+	glScalef(1,1,ball->r);
+ }
 }
 
 
@@ -186,27 +213,59 @@ void set_ball_speed(Ball* ball,int value){
 }
 
 void collusion(Ball* ball){
- printf("III%fIII",ball->position.x);
  if (ball->position.x>=100-ball->r){
 	ball->speed=-ball->speed*0.66666;
 	ball->position.x=99.9999-ball->r;
-}
+ }
  else if (ball->position.x<=-100+ball->r){ 
 	ball->speed=-ball->speed*0.66666;
 	ball->position.x=-99.9999+ball->r;
-}
+ }
 
  if (ball->position.y>=10-ball->r){
 	ball->speed*=0.66666;
         ball->direction*=-1;
 	ball->position.y=9.9999-ball->r;
-}
+ }
  else if (ball->position.y<=-10+ball->r){
 	ball->speed*=0.66666;
         ball->direction*=-1;
 	ball->position.y=-9.9999+ball->r;
+ }
+ tri_collusion(ball->position,1,&ball->isAlive);
+}
 
+void tri_collusion(vec3 pos,int r,int* live){
+ for (int i=0;i<sizeof(tri.position)/sizeof(*(tri.position));i++){
+	if (sqrt(pow((pos.x-tri.position[i].x),2)+pow((pos.y-tri.position[i].y),2))<r)
+	{
+		*live=0;
+	}
+ }   
+}
+
+void draw_triangular_pyramids(){
+
+ for (int i=0;i<(sizeof(tri.position)/sizeof(*(tri.position)));i++){
+	//printf("x:%f",tri.position[i].x);
+	//printf("y:%f",tri.position[i].y);
+	//printf("z:%f\n",tri.position[i].z);
+	glPushMatrix();
+	glTranslatef(tri.position[i].x,tri.position[i].y,0);
+	glBindTexture(GL_TEXTURE_2D, tri.texture);
+        draw_model(&(tri.model));
+	glPopMatrix();
+ 
+ }	
 
 }
 
+void fill_tris(){
+	for (int i=0;i<(sizeof(tri.position)/sizeof(*(tri.position)));i++){
+		tri.position[i].x=(float)rand()/((float)RAND_MAX/190)-90;
+		tri.position[i].y=(float)rand()/((float)RAND_MAX/20)-10;
+		tri.position[i].z=0;
+		
+
+	}
 }
