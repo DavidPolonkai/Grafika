@@ -106,6 +106,9 @@ void keyboard(unsigned char key, int x, int y)
 		}
               }
  	break; 
+    case 'l':
+		set_lightfx(&scene);
+        break;
     }
 
     glutPostRedisplay();

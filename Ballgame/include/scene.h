@@ -13,6 +13,7 @@ typedef struct Scene
     Material material_field;
     GLuint texture_field;
     float light;
+    int lightfx;
 } Scene;
 
 typedef struct Ball
@@ -75,5 +76,7 @@ void set_help();
 void set_light(Scene* scene,float i);
 
 void null_points();
+
+void set_lightfx(Scene* scene);
 
 #endif /* SCENE_H */

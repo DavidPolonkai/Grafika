@@ -11,6 +11,8 @@ int help=0;
 
 long points=0;
 
+float lighty=0;
+float lmodder=0.1;
 
 void init_scene(Scene* scene,Ball* ball)
 {
@@ -73,12 +75,17 @@ void init_scene(Scene* scene,Ball* ball)
 
 }
 
-void set_lighting(Scene scene)
+void set_lighting(Scene scene,Ball* ball)
 {
+if (scene.lightfx>0){
+    if (lighty<-10) lmodder=0.1;
+    else if (lighty>10) lmodder=-0.1;
+    lighty+=lmodder;
+}
     float ambient_light[] = { 0.2, 0.2, 0.2, 1.0f };
     float diffuse_light[] = { 1.0*scene.light, 1.0*scene.light, 1.0*scene.light, 1.0f };
     float specular_light[] = { 0.5*scene.light, 0.5*scene.light, 0.5*scene.light, 1.0f };
-    float position[] = { 0.0f, 0.0f, 10.0f, 1.0f };
+    float position[] = { ball->position.x, lighty, 10.0f, 1.0f };
 
     glLightfv(GL_LIGHT0, GL_AMBIENT, ambient_light);
     glLightfv(GL_LIGHT0, GL_DIFFUSE, diffuse_light);
@@ -116,7 +123,7 @@ void set_material(const Material* material)
 void draw_scene(const Scene* scene,const Ball* ball)
 {
     set_material(&(ball->material));
-    set_lighting(*scene);
+    set_lighting(*scene,ball);
     glScalef(1,1,1);
     glPushMatrix();
     glTranslatef(0,0,0);
@@ -139,7 +146,8 @@ void draw_scene(const Scene* scene,const Ball* ball)
 
 
 void drawString(float x,float y,float z, char string[]) {
-  glRasterPos3f(x, y, z);   
+  glRasterPos3f(x, y, z);  
+  //glColor3f(0,0,0); 
   for (char* c = string; *c != '\0'; c++) {
     glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, *c);
  }	
@@ -195,7 +203,7 @@ void move_ball(Ball* ball){
 	glPushMatrix();
 	glDisable(GL_LIGHTING);
 
-	drawString(ball->position.x,3.3f,ball->position.z,"Gyorsitas: W, Lassitas: S, Jobbra: D, Ballra: A, Zoom: +-, Camera angle: QE, Light: ,.");
+	drawString(ball->position.x,3.3f,ball->position.z,"Gyorsitas: W, Lassitas: S, Jobbra: D, Ballra: A, Zoom: +-, Camera angle: QE, Light_FX: l Light: ,.");
 	glPopMatrix();
  }
  else{
@@ -246,6 +254,11 @@ void set_light(Scene* scene,float i){
 
 void null_points(){
 	points=0;
+}
+
+void set_lightfx(Scene* scene){
+	if (scene->lightfx==0) scene->lightfx++;
+        else scene->lightfx--;
 }
 
 void collusion(Ball* ball){
