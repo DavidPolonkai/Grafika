@@ -12,10 +12,7 @@ void set_callbacks()
 {
     glutDisplayFunc(display);
     glutReshapeFunc(reshape);
-    glutMouseFunc(mouse);
-    glutMotionFunc(motion);
     glutKeyboardFunc(keyboard);
-    glutKeyboardUpFunc(keyboard_up);
     glutIdleFunc(idle);
 }
 
@@ -28,7 +25,7 @@ int main(int argc, char* argv[])
 
     glutInit(&argc, argv);
 
-    glutInitWindowSize(1920, 1080);     
+    glutInitWindowSize(800, 600);     
     glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE | GLUT_DEPTH);
 
     window = glutCreateWindow("Scene with a camera");

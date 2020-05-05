@@ -10,12 +10,9 @@ typedef struct Scene
 {
     Camera camera;
     Model field;
-    Model tri;
     Material material_field;
-    Material material_tri;
-    GLuint texture_ball;
     GLuint texture_field;
-    GLuint texture_tri;
+    float light;
 } Scene;
 
 typedef struct Ball
@@ -73,5 +70,10 @@ void set_ball_speed(Ball* ball, int value);
 
 void collusion(Ball* ball);
 
+void set_help();
+
+void set_light(Scene* scene,float i);
+
+void null_points();
 
 #endif /* SCENE_H */

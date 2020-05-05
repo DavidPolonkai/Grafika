@@ -29,25 +29,12 @@ void display();
  */
 void reshape(GLsizei width, GLsizei height);
 
-/**
- * Call after mouse button event.
- */
-void mouse(int button, int state, int x, int y);
-
-/**
- * Call after mouse event.
- */
-void motion(int x, int y);
 
 /**
  * Call after keyboard event.
  */
 void keyboard(unsigned char key, int x, int y);
 
-/**
- * Call after keyboard release event.
- */
-void keyboard_up(unsigned char key, int x, int y);
 
 /**
  * Call when there is no other event.

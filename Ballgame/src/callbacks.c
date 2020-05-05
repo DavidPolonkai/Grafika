@@ -8,6 +8,8 @@ struct {
     int y;
 } mouse_position;
 
+int isAlive;
+
 void display()
 {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -15,14 +17,9 @@ void display()
 
     glPushMatrix();
     set_view(&camera);
-
     set_camera_pos(&camera,ball.position,10,45);
     draw_scene(&scene,&ball);
     glPopMatrix();
-
-    if (is_preview_visible) {
-        show_texture_preview();
-    }
 
     glutSwapBuffers();
 }
@@ -52,19 +49,7 @@ void reshape(GLsizei width, GLsizei height)
     gluPerspective(VIEWPORT_ASPECT, VIEWPORT_RATIO, 0.01, 10000.0);
 }
 
-void mouse(int button, int state, int x, int y)
-{
-    mouse_position.x = x;
-    mouse_position.y = y;
-}
 
-void motion(int x, int y)
-{
-    //rotate_camera(&camera, mouse_position.x - x, mouse_position.y - y);
-    mouse_position.x = x;
-    mouse_position.y = y;
-    glutPostRedisplay();
-}
 
 void keyboard(unsigned char key, int x, int y)
 {
@@ -76,17 +61,15 @@ void keyboard(unsigned char key, int x, int y)
         set_camera_angle(&camera,1);
         break;
     case 'a':
-        //set_camera_side_speed(&camera, 1);
 	set_direction(&ball,1);
         break;
     case 'd':
-        //set_camera_side_speed(&camera, -1);
 	set_direction(&ball,-1);
         break;
-    case '+':
+    case '-':
         set_camera_distance(&camera,1);
         break;
-    case '-':
+    case '+':
  	set_camera_distance(&camera ,-1);
         break;
     case 'w':
@@ -96,37 +79,41 @@ void keyboard(unsigned char key, int x, int y)
 	set_ball_speed(&ball,-1);
 	break;
     case 'x':
-        set_direction(&ball,0);
+        //set_direction(&ball,0);  //only for debugging
         break;
+    case 'h':{
+	
+	stop_ball(&ball);
+	set_help();
+	}	        
+	break;
+    case ',':set_light(&scene,-0.1);
+	break;
+    case '.':set_light(&scene,0.1);
+        break;
+    case ' ': {
+		if (ball.isAlive==0){
+			ball.direction=0;
+			ball.speed=0;
+    			ball.position.x=-95;
+			ball.position.y=0;
+			ball.position.z=1;
+			ball.rot_degree=0;
+			ball.r=1;
+			ball.isAlive=1;
+			null_points();
+	
+		}
+              }
+ 	break; 
     }
 
     glutPostRedisplay();
 }
 
-void keyboard_up(unsigned char key, int x, int y)
-{
-    switch (key) {
-    case 'w':
-    case 's':
-        set_camera_speed(&camera, 0.0);
-        break;
-    case 'a':
-    case 'd':
-        //set_camera_side_speed(&camera, 0.0);
-	//wsset_direction(&ball,0);
-        break;
-    case 'q':
-    case 'e':
-        set_camera_vert_speed(&camera,0.0);
-        break; 
-    /*case '':
-    case 'y':
-        rotate_obj(&obj,0.0);
-	break;*/
-    }
 
-    glutPostRedisplay();
-}
+
+
 
 void idle()
 {
