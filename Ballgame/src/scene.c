@@ -203,7 +203,7 @@ void move_ball(Ball* ball){
 	glPushMatrix();
 	glDisable(GL_LIGHTING);
 
-	drawString(ball->position.x,3.3f,ball->position.z,"Gyorsitas: W, Lassitas: S, Jobbra: D, Ballra: A, Zoom: +-, Camera angle: QE, Light_FX: l Light: ,.");
+	drawString(ball->position.x,5.4f,ball->position.z,"Gyorsitas: W, Lassitas: S, Jobbra: D, Ballra: A, Zoom: +-, Camera angle: QE, Light_FX: L, Light: ,.  EXIT: ESC");
 	glPopMatrix();
  }
  else{
