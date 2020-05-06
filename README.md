@@ -10,10 +10,13 @@ Movement:
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Slower/Backward: S  
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Turn left: A  
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Turn Right: D  
-View angle:  
+View:  
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Up: E  
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Down: Q  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Zoom in: +  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Zoom out: -  
 Light:  
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Increase: .  
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Decrease: ,  
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;FX: L  
+Exit: ESC
