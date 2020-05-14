@@ -3,10 +3,6 @@
 #define VIEWPORT_RATIO (4.0 / 3.0)
 #define VIEWPORT_ASPECT 50.0
 
-struct {
-    int x;
-    int y;
-} mouse_position;
 
 int isAlive;
 
@@ -17,10 +13,9 @@ void display()
 
     glPushMatrix();
     set_view(&camera);
-    set_camera_pos(&camera,ball.position,10,45);
+    set_camera_pos(&camera,ball.position);
     draw_scene(&scene,&ball);
     glPopMatrix();
-
     glutSwapBuffers();
 }
 
@@ -51,7 +46,7 @@ void reshape(GLsizei width, GLsizei height)
 
 
 
-void keyboard(unsigned char key, int x, int y)
+void keyboard(unsigned char key)
 {
     switch (key) {
     case 'e':
@@ -124,13 +119,13 @@ void idle()
 {
     static int last_frame_time = 0;
     int current_time;
-    double elapsed_time;
+  //  double elapsed_time;
    
     current_time = glutGet(GLUT_ELAPSED_TIME);
-    elapsed_time = (double)(current_time - last_frame_time) / 1000;
+   // elapsed_time = (double)(current_time - last_frame_time) / 1000;
     last_frame_time = current_time;
 
-    update_camera(&camera, elapsed_time,&ball.position);
+    update_camera(&camera,&ball.position);
     
     glutPostRedisplay();
 }

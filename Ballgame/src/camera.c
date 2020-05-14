@@ -21,16 +21,16 @@ void init_camera(Camera* camera)
     is_preview_visible = FALSE;
 }
 
-void update_camera(Camera* camera, double time,vec3* vector)
+void update_camera(Camera* camera,vec3* vector)
 {
-    double angle;
-    double side_angle;
-    angle = degree_to_radian(camera->rotation.z);
-    side_angle = degree_to_radian(camera->rotation.z + 90.0);
 	camera->position.x=sin(degree_to_radian(camera->angle))*-(camera->distance)+vector->x;
         camera->position.z=cos(degree_to_radian(camera->angle))*(camera->distance)+vector->z;
         camera->position.y = 0;
-	camera->rotation.x = -90+camera->angle;
+        camera->rotation.x = -90+camera->angle;
+}
+
+void set_camera_follow(Camera* camera,float y,float d,float alpha,float modifier){
+ camera->rotation.z=sin(alpha)*radian_to_degree(atan(y/d))/modifier;
 }
 
 void set_view(const Camera* camera)
@@ -48,11 +48,13 @@ void set_view(const Camera* camera)
 
 
 
-void set_camera_pos(Camera* camera,vec3 ballpos,float distance, float angle){
-float alpha = degree_to_radian(angle);
+
+void set_camera_pos(Camera* camera,vec3 ballpos){
+float alpha = degree_to_radian(camera->angle);
 camera->position.x=0;
-camera->position.y=cos(alpha)*distance;
-camera->position.z=sin(alpha)*distance;
+camera->position.y=cos(alpha)*camera->distance;
+camera->position.z=sin(alpha)*camera->distance;
+set_camera_follow(camera,ballpos.y,camera->distance,alpha,2.6);
 }
 
 void set_camera_angle(Camera* camera,int a){
@@ -64,4 +66,5 @@ void set_camera_distance(Camera* camera,int  a){
  if (!(a==-1 && camera->distance<3))camera->distance+=a;
 
 }
+
 

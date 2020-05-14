@@ -33,7 +33,7 @@ void reshape(GLsizei width, GLsizei height);
 /**
  * Call after keyboard event.
  */
-void keyboard(unsigned char key, int x, int y);
+void keyboard(unsigned char key);
 
 
 /**

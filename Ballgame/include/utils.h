@@ -40,4 +40,5 @@ typedef struct Material
  */
 double degree_to_radian(double degree);
 
+double radian_to_degree(double radian);
 #endif /* UTILS_H */

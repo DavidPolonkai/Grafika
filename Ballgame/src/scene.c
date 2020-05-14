@@ -3,7 +3,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <GL/glut.h>
-
+#include <math.h>
 #include <load.h>
 #include <draw.h>
 
@@ -29,9 +29,9 @@ void init_scene(Scene* scene,Ball* ball)
     ball->r=1;
     ball->isAlive=1;
 
-    ball->material.ambient.red = 0.2;
-    ball->material.ambient.green = 0.2;
-    ball->material.ambient.blue = 0.2;
+    ball->material.ambient.red = 0.6;
+    ball->material.ambient.green = 0.6;
+    ball->material.ambient.blue = 0.6;
 
     ball->material.diffuse.red = 0.3;
     ball->material.diffuse.green = 0.3;
@@ -57,9 +57,9 @@ void init_scene(Scene* scene,Ball* ball)
 
     fill_tris();
 
-    scene->material_field.ambient.red = 0.2;
-    scene->material_field.ambient.green = 0.2;
-    scene->material_field.ambient.blue = 0.2;
+    scene->material_field.ambient.red = 0.6;
+    scene->material_field.ambient.green = 0.6;
+    scene->material_field.ambient.blue = 0.6;
 
     scene->material_field.diffuse.red = 0.3;
     scene->material_field.diffuse.green = 0.3;
@@ -69,7 +69,7 @@ void init_scene(Scene* scene,Ball* ball)
     scene->material_field.specular.green = 1.0;
     scene->material_field.specular.blue = 1.0;
 
-    scene->material_field.shininess = 0.1;
+    scene->material_field.shininess = 0.8;
 	
 
 
@@ -85,7 +85,7 @@ if (scene.lightfx>0){
     float ambient_light[] = { 0.2, 0.2, 0.2, 1.0f };
     float diffuse_light[] = { 1.0*scene.light, 1.0*scene.light, 1.0*scene.light, 1.0f };
     float specular_light[] = { 0.5*scene.light, 0.5*scene.light, 0.5*scene.light, 1.0f };
-    float position[] = { ball->position.x, lighty, 10.0f, 1.0f };
+    float position[] = { ball->position.x-0.3, lighty, 10.0f, 1.0f };
 
     glLightfv(GL_LIGHT0, GL_AMBIENT, ambient_light);
     glLightfv(GL_LIGHT0, GL_DIFFUSE, diffuse_light);
@@ -120,7 +120,7 @@ void set_material(const Material* material)
     glMaterialfv(GL_FRONT_AND_BACK, GL_SHININESS, &(material->shininess));
 }
 
-void draw_scene(const Scene* scene,const Ball* ball)
+void draw_scene(const Scene* scene, Ball* ball)
 {
     set_material(&(ball->material));
     set_lighting(*scene,ball);
@@ -129,6 +129,7 @@ void draw_scene(const Scene* scene,const Ball* ball)
     glTranslatef(0,0,0);
     glBindTexture(GL_TEXTURE_2D, scene->texture_field);
     set_material(&(scene->material_field));
+    glColor3f(0.5,0.5,0.5); 
     draw_model(&(scene->field));
 
 	
@@ -146,11 +147,15 @@ void draw_scene(const Scene* scene,const Ball* ball)
 
 
 void drawString(float x,float y,float z, char string[]) {
-  glRasterPos3f(x, y, z);  
-  //glColor3f(0,0,0); 
+  glPushAttrib(GL_CURRENT_BIT);
+  glRasterPos3f(x,y,z);  
+  glDisable(GL_LIGHTING);
+
   for (char* c = string; *c != '\0'; c++) {
+
     glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, *c);
  }	
+  glPopAttrib();
 }
 
 void move_ball(Ball* ball){
@@ -200,15 +205,12 @@ void move_ball(Ball* ball){
    
  }
  else if (help==1){
-	glPushMatrix();
-	glDisable(GL_LIGHTING);
-
+        glColor3f(1.0,1.0,1.0);
 	drawString(ball->position.x,5.4f,ball->position.z,"Gyorsitas: W, Lassitas: S, Jobbra: D, Ballra: A, Zoom: +-, Camera angle: QE, Light_FX: L, Light: ,.  EXIT: ESC");
-	glPopMatrix();
- }
+	
+}
  else{
 	glPushMatrix();
-   	glEnable(GL_LIGHTING);
 	glTranslatef(ball->position.x,ball->position.y,ball->r);
 	if (ball->r>0.3)ball->r-=0.01;
 	glScalef(1,1,ball->r);
@@ -217,8 +219,8 @@ void move_ball(Ball* ball){
 	glPopMatrix();
         char str[50]="You died, press space to restart. Your score: ";
         char n[6];
-	sprintf(n,"%d",points);
-	
+	sprintf(n,"%ld",points);
+	glColor3f(1.0,1.0,1.0);
 	if (ball->r<0.3) drawString(ball->position.x,3.0f,ball->position.z+1,strcat(str,n));
 
  }
@@ -287,7 +289,7 @@ void collusion(Ball* ball){
 }
 
 void tri_collusion(vec3 pos,int r,int* live){
- for (int i=0;i<sizeof(tri.position)/sizeof(*(tri.position));i++){
+ for (unsigned int i=0;i<sizeof(tri.position)/sizeof(*(tri.position));i++){
 	if (sqrt(pow((pos.x-tri.position[i].x),2)+pow((pos.y-tri.position[i].y),2))<r)
 	{
 		*live=0;
@@ -297,7 +299,7 @@ void tri_collusion(vec3 pos,int r,int* live){
 
 void draw_triangular_pyramids(){
 
- for (int i=0;i<(sizeof(tri.position)/sizeof(*(tri.position)));i++){
+ for (unsigned int i=0;i<(sizeof(tri.position)/sizeof(*(tri.position)));i++){
 	glPushMatrix();
 	glTranslatef(tri.position[i].x,tri.position[i].y,0);
 	glBindTexture(GL_TEXTURE_2D, tri.texture);
@@ -310,7 +312,7 @@ void draw_triangular_pyramids(){
 
 void fill_tris(){
 	srand(time(NULL));
-	for (int i=0;i<(sizeof(tri.position)/sizeof(*(tri.position)));i++){
+	for (unsigned int i=0;i<(sizeof(tri.position)/sizeof(*(tri.position)));i++){
 		tri.position[i].x=(float)rand()/((float)RAND_MAX/190)-90;
 		tri.position[i].y=(float)rand()/((float)RAND_MAX/20)-10;
 		tri.position[i].z=0;
