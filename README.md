@@ -20,7 +20,7 @@ Light:
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Decrease: ,  
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;FX: L  
 Obstacle type:
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Pyramid: 0
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Spikes: 1 (Much more graphical processing power required for this)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Pyramid: 0  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Spikes: 1 (Much more graphical processing power required for this)  
 Exit: ESC
 
