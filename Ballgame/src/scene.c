@@ -69,9 +69,21 @@ void init_scene(Scene* scene,Ball* ball)
     scene->material_field.specular.green = 1.0;
     scene->material_field.specular.blue = 1.0;
 
-    scene->material_field.shininess = 0.8;
-	
+    scene->material_field.shininess = 0.0;
 
+    tri.material.ambient.red = 0.1;
+    tri.material.ambient.green = 0.1;
+    tri.material.ambient.blue = 0.1;
+
+    tri.material.diffuse.red = 0;
+    tri.material.diffuse.green = 0;
+    tri.material.diffuse.blue = 0;
+
+    tri.material.specular.red = 0.4;
+    tri.material.specular.green = 0.4;
+    tri.material.specular.blue = 0.4;
+
+    tri.material.shininess = 1.0;
 
 }
 
