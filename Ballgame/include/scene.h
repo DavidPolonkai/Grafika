@@ -38,6 +38,8 @@ typedef struct Tri
 } Tri;
 
 Tri tri;
+Model tri2mod;
+GLuint tri2tex;
 
 /**
  * Initialize the scene by loading models.
@@ -57,7 +59,7 @@ void set_material(const Material* material);
 /**
  * Draw the scene objects.
  */
-void draw_scene(const Scene* scene, Ball* ball);
+void draw_scene(const Scene* scene, Ball* ball,int type);
 
 /**
  * Draw the origin of the world coordinate system.

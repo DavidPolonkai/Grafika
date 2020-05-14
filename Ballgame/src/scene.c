@@ -52,8 +52,10 @@ void init_scene(Scene* scene,Ball* ball)
 
 
     load_model(&(tri.model), "Objects/tri.obj");
+    load_model(&(tri2mod),"Objects/tri_hard.obj");
 
     tri.texture = load_texture("textures/tri.png"); 
+    tri2tex = load_texture("textures/tri_hard.png");	
 
     fill_tris();
 
@@ -84,6 +86,7 @@ void init_scene(Scene* scene,Ball* ball)
     tri.material.specular.blue = 0.4;
 
     tri.material.shininess = 1.0;
+
 
 }
 
@@ -132,7 +135,7 @@ void set_material(const Material* material)
     glMaterialfv(GL_FRONT_AND_BACK, GL_SHININESS, &(material->shininess));
 }
 
-void draw_scene(const Scene* scene, Ball* ball)
+void draw_scene(const Scene* scene, Ball* ball,int type)
 {
     set_material(&(ball->material));
     set_lighting(*scene,ball);
@@ -145,7 +148,7 @@ void draw_scene(const Scene* scene, Ball* ball)
     draw_model(&(scene->field));
 
 	
-    draw_triangular_pyramids();
+    draw_triangular_pyramids(type);
 
     glPopMatrix();
 
@@ -218,7 +221,16 @@ void move_ball(Ball* ball){
  }
  else if (help==1){
         glColor3f(1.0,1.0,1.0);
-	drawString(ball->position.x,5.4f,ball->position.z,"Gyorsitas: W, Lassitas: S, Jobbra: D, Ballra: A, Zoom: +-, Camera angle: QE, Light_FX: L, Light: ,.  EXIT: ESC");
+	drawString(ball->position.x,ball->position.y,ball->position.z+3.6,"Gyorsitas: W");
+	drawString(ball->position.x,ball->position.y,ball->position.z+3.2,"Lassitas: S");
+	drawString(ball->position.x,ball->position.y,ball->position.z+2.8,"Jobbra: D");
+	drawString(ball->position.x,ball->position.y,ball->position.z+2.4,"Ballra: A");
+	drawString(ball->position.x,ball->position.y,ball->position.z+2.0,"Zoom: +-");
+	drawString(ball->position.x,ball->position.y,ball->position.z+1.6,"Camera angle: QE");
+	drawString(ball->position.x,ball->position.y,ball->position.z+1.2,"Light_FX: L");
+	drawString(ball->position.x,ball->position.y,ball->position.z+0.8,"Light: ,.");
+	drawString(ball->position.x,ball->position.y,ball->position.z+0.4,"EXIT: ESC");
+	drawString(ball->position.x,ball->position.y,ball->position.z,"Obstacle type: 0 1");
 	
 }
  else{
@@ -309,13 +321,20 @@ void tri_collusion(vec3 pos,int r,int* live){
  }   
 }
 
-void draw_triangular_pyramids(){
+void draw_triangular_pyramids(int type){
 
  for (unsigned int i=0;i<(sizeof(tri.position)/sizeof(*(tri.position)));i++){
 	glPushMatrix();
 	glTranslatef(tri.position[i].x,tri.position[i].y,0);
+	if (type==0){
+
 	glBindTexture(GL_TEXTURE_2D, tri.texture);
         draw_model(&(tri.model));
+	}
+	else if(type==1){
+	glBindTexture(GL_TEXTURE_2D, tri2tex);
+        draw_model(&(tri2mod));
+	}
 	glPopMatrix();
  
  }	

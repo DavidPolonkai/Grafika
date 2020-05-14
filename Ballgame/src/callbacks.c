@@ -5,6 +5,7 @@
 
 
 int isAlive;
+int type=0;
 
 void display()
 {
@@ -14,7 +15,7 @@ void display()
     glPushMatrix();
     set_view(&camera);
     set_camera_pos(&camera,ball.position);
-    draw_scene(&scene,&ball);
+    draw_scene(&scene,&ball,type);
     glPopMatrix();
     glutSwapBuffers();
 }
@@ -85,6 +86,10 @@ void keyboard(unsigned char key)
     case ',':set_light(&scene,-0.1);
 	break;
     case '.':set_light(&scene,0.1);
+        break;
+    case '1':type=1;
+	break;
+    case '0':type=0;
         break;
     case ' ': {
 		if (ball.isAlive==0){
